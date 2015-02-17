@@ -1,0 +1,25 @@
+derbynotebook:
+  build: ./derby-notebook
+  links:
+    - redis
+    - mongo
+    - ipython
+  ports:
+    - "9999:9999"
+  volumes:
+    - ./derby-notebook/src:/srv/derby-notebook/src
+
+redis:
+  image: redis
+
+mongo:
+  image: dockerfile/mongodb
+
+ipython:
+  image: ipython/notebook
+  ports:
+    - "8888:8888"
+  environment:
+    USE_HTTP: 1
+  volumes:
+    - ./notebooks:/notebooks
