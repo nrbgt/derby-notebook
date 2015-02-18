@@ -1,5 +1,6 @@
 derbynotebook:
   build: ./derby-notebook
+  restart: always
   links:
     - redis
     - mongo
@@ -16,6 +17,7 @@ mongo:
   image: dockerfile/mongodb
 
 ipython:
+  command: /notebook.sh
   image: ipython/notebook
   ports:
     - "8888:8888"
