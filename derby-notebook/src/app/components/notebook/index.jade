@@ -2,6 +2,6 @@ index:(element="j-notebook", arrays="content/cells")
   #notebook_panel
     #notebook
       #notebook-container.container
-        each @content.cells as #cell
+        each content.cells as #cell
           j-cell(cell='{{#cell}}')
       .end_space

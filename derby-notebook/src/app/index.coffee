@@ -3,6 +3,12 @@ request = require 'request'
 app = module.exports = require 'derby'
   .createApp 'derby-notebook', __filename
 
+api = ->
+  try
+    "#{window.location.origin}/api"
+  catch err
+    "http://localhost:9999/api"
+
 init = ->
   @serverUse module, "derby-jade", coffee: true
   @serverUse module, "derby-stylus"
@@ -18,10 +24,12 @@ init = ->
     model.setNull "_page.notebook", notebook
 
     request
-      uri: "/api/contents/#{model.get "notebook"}?type=notebook"
+      url: "#{api()}/contents/#{notebook}?type=notebook"
       headers: "Content-Type": "application/json"
       json: true
-      (err, resp, body) -> model.set "_page.notebook_content", body
+      (err, resp, body) ->
+        console.log err, resp, body
+        model.set "_page.notebook_content", body
 
     # Subscribe specifies the data to sync
     model.subscribe "hello.message", ->
