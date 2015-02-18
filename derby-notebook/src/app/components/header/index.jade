@@ -1,0 +1,18 @@
+index:(element="j-header")
+  #header(style='display: block;')
+    #header-container.container
+      #ipython_notebook.nav.navbar-brand.pull-left
+        a(href='/tree', title='dashboard')
+          img(src='/static/base/images/logo.png'
+            alt='Jupyter Notebook')
+
+      span#login_widget
+        button#logout.btn.btn-sm.navbar-btn Logout
+
+      span#save_widget.pull-left.save_widget
+        span#notebook_name.filename {{notebook}}
+        span.checkpoint_status(title='{{checkpoint}}')
+        | Last Checkpoint: {{checkpoint}}
+        span.autosave_status (autosaved)
+
+      .header-bar

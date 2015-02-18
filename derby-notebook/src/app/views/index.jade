@@ -1,0 +1,16 @@
+Head:
+  style.
+    @import url("/static/components/codemirror/lib/codemirror.css");
+    @import url("/static/style/style.min.css");
+    @import url("/static/notebook/css/override.css");
+  
+Body:
+  .notebook_app
+    j-header(notebook='{{_page.notebook}}')
+
+    #site(style="display:block;")
+      #ipython-main-app
+        j-notebook(
+          notebook='{{_page.notebook}}'
+          notebook_content='{{_page.notebook_content}}'
+        )

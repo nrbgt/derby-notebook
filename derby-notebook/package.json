@@ -16,7 +16,7 @@
     "connect-redis": "~1.4.7",
     "derby": "0.6.0-alpha29",
     "derby-debug": "^0.1.0",
-    "derby-starter": "^0.2.6",
+    "derby-jade": "^0.6.17",
     "derby-stylus": "~0.1.0",
     "express": "~3.18.0",
     "express-http-proxy": "~0.3.1",
@@ -24,10 +24,14 @@
     "racer-bundle": "~0.1.1",
     "racer-highway": "^1.4.1",
     "redis": "~0.10.1",
-    "xhr-browserify": "~0.0.4"
+    "request": "~2.53.0",
+    "xhr": "~2.0.0"
   },
   "optionalDependencies": {
     "hiredis": "~0.1.16"
+  },
+  "browser": {
+    "request": "xhr"
   },
   "devDependencies": {},
   "engines": {
