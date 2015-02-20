@@ -24,7 +24,8 @@ module.exports = class Cell
       else if (remove = passed.$stringRemove) and remove.howMany
         @suppress = true
         from = @cm.posFromIndex remove.index
-        to = @cm.posFromIndex remove.howMany
+        to = @cm.posFromIndex remove.index + remove.howMany
+        console.log "replace", from, to
         @cm.replaceRange "", from, to
         @suppress = false
 

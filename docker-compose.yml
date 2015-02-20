@@ -8,6 +8,7 @@ proxy:
     - ipython
   environment:
     HTTP_PORT: "9999"
+    IPYTHON_PASSWORD: ""
   ports:
     - "9999:9999"
   volumes:
@@ -27,5 +28,6 @@ ipython:
     - "8888:8888"
   environment:
     USE_HTTP: 1
+    PASSWORD: ""
   volumes:
     - ./notebooks:/notebooks

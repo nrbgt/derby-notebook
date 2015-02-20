@@ -32,7 +32,9 @@
     "redis": "^0.12.1",
     "request": "^2.53.0",
     "serve-favicon": "^2.2.0",
-    "tough-cookie": "^0.12.1"
+    "tough-cookie": "^0.12.1",
+    "underscore": "^1.8.1",
+    "ws": "^0.7.1"
   },
   "optionalDependencies": {
     "hiredis": "^0.2.0"

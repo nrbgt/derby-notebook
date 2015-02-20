@@ -14,19 +14,23 @@ A Derby model is a set of collections of JSON-compatible documents. The only
 collection thus far is `notebooks`, which includes, of course, the notebook
 contents, but several other pieces to enable a multi-user experience:
 
-```javascript
+```js
 {
   // The filename, as would be used in /notebooks/Untitled.ipynb
-  "name": "Untitled",
+  "name": "Untitled.ipynb",
   // the results of the contents manager, with some added information that must
   // be stripped before being posted
   "contents": {
     # a bunch of stuff
     "contents": {
-      "cells":
+      "cells": [
         {
-          # dammit, we need
-          "_id": "generated-by-derby"
+          "source": ""
+          "_multiuser": {
+            "id": "generated-by-derby",
+            # gnarly state machine stuff: RUN_REQUESTED, RUNNING
+            "state": "NOT_RUNNING"
+          }
         }
       ]
     }
@@ -34,12 +38,11 @@ contents, but several other pieces to enable a multi-user experience:
   // a hash of user-related stuff so that the UI can reflect multiple
   // perspectives
   "users": {
-    "generated-by-node": {
+    "user-id-generated-by-node": {
       "currentCell": "generated-by-derby",
       "cursor": [0, 1]
     }
-  },
-
+  }
 }
 ```
 
@@ -48,14 +51,14 @@ contents, but several other pieces to enable a multi-user experience:
 This is all tied together with [docker-compose](http://github.com).
 
 Build (this can take a while!) and run everything with:
-```shell
+```sh
 docker-compose up
 ```
 Then visit http://localhost:9999/
 
 Or, if you just want to restart the proxy:
 
-```shell
+```sh
 docker-compose build && docker-compose start && docker-compose logs
 ^C
 docker-compose build && docker-compose restart proxy && docker-compose logs

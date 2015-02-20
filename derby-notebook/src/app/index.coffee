@@ -1,13 +1,17 @@
 app = module.exports = require 'derby'
   .createApp 'derby-notebook', __filename
 
+# extra init so we can use app as @
 init = ->
+  # these are preference: coffee, jade, stylus kinda wotk the same
   @serverUse module, "derby-jade", coffee: true
   @serverUse module, "derby-stylus"
 
+  # load high-level views and templates
   @loadViews "#{__dirname}/views"
   @loadStyles "#{__dirname}/styles"
 
+  # enable various derby-level things
   @use require "derby-debug"
   @use require "./components"
 
@@ -15,14 +19,28 @@ init = ->
   @get '/multiuser/:name?', (page, model, {name}, next) ->
     notebookQuery = model.query 'notebooks', name: name
 
-    notebookQuery.subscribe (err) ->
+    notebookQuery.fetch (err) ->
       return next err if err
 
       notebooks = notebookQuery.get()
-      id = if notebooks.length then notebooks[0].id else
+
+      # first we have to find the notebook..
+      id = if notebooks.length
+        notebooks[0].id
+      else
+        # or we make a new one
         model.add "notebooks", name: name
 
-      model.ref "_page.notebook", "notebooks.#{id}"
-      page.render()
+      # reference it to the page for easy naming
+      notebook = model.at "notebooks.#{id}"
+      model.ref "_page.notebook", notebook
 
+      # finally, subscribe to all changes beneath it... maybe other stuff
+      # eventually
+      model.subscribe notebook, (err) ->
+        return next err if err
+        # ok, actually render!
+        page.render()
+
+# let's go!
 init.call app

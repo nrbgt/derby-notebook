@@ -11,6 +11,7 @@ Body:
   .notebook_app
     j-header(notebook='{{_page.notebook.name}}')
     j-toolbar(notebook='{{_page.notebook}}')
+    j-kernel(kernel='{{_page.notebook.session.kernel}}')
 
     #site(style="display:block;")
       #ipython-main-app

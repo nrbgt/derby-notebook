@@ -1,0 +1,15 @@
+index:(element="j-kernel")
+  #kernel_indicator.navbar-text.indicator_area
+    span.kernel_indicator_name
+      | {{kernel.name}}
+      
+      if kernel.status is "connecting"
+        i.fa.fa-circle-o-notch.fa-spin
+      else if kernel.status is "connected"
+        i.fa.fa-circle-o
+      else if kernel.status is "error"
+        i.fa.fa-exclamation-triangle
+      else if kernel.status is "dead"
+        i.fa.fa-bomb
+      else
+        i.fa.fa-question-circle

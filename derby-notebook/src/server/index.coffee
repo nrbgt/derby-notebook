@@ -3,7 +3,7 @@ console.info "notebook proxy starting ..."
 env = require "./env"
   .setup()
 
-daemon = require "./daemon"
+daemon = require "../daemon"
 
 app = require "../app"
 require "./starter"
