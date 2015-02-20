@@ -1,13 +1,5 @@
-request = require 'request'
-
 app = module.exports = require 'derby'
   .createApp 'derby-notebook', __filename
-
-api = ->
-  try
-    "#{window.location.origin}/api"
-  catch err
-    "http://localhost:9999/api"
 
 init = ->
   @serverUse module, "derby-jade", coffee: true
@@ -20,20 +12,17 @@ init = ->
   @use require "./components"
 
   # Routes render on CLIENT as well as SERVER
-  @get '/multiuser/:notebook?', (page, model, {notebook}, next) ->
-    model.setNull "_page.notebook", notebook
+  @get '/multiuser/:name?', (page, model, {name}, next) ->
+    notebookQuery = model.query 'notebooks', name: name
 
-    request
-      url: "#{api()}/contents/#{notebook}?type=notebook"
-      headers: "Content-Type": "application/json"
-      json: true
-      (err, resp, body) ->
-        console.log err, resp, body
-        model.set "_page.notebook_content", body
+    notebookQuery.subscribe (err) ->
+      return next err if err
 
-    # Subscribe specifies the data to sync
-    model.subscribe "hello.message", ->
-      console.log "rendering"
+      notebooks = notebookQuery.get()
+      id = if notebooks.length then notebooks[0].id else
+        model.add "notebooks", name: name
+
+      model.ref "_page.notebook", "notebooks.#{id}"
       page.render()
 
 init.call app

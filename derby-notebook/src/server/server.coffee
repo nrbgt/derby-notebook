@@ -1,38 +1,36 @@
-coffeeify = require('coffeeify')
-derby = require('derby')
-express = require('express')
-redis = require('redis')
-RedisStore = require('connect-redis')(express)
-highway = require('racer-highway')
-liveDbMongo = require('livedb-mongo')
-parseUrl = require('url').parse
+coffeeify = require "coffeeify"
+derby = require "derby"
+highway = require "racer-highway"
+bundle = require "racer-bundle"
+express = require "express"
 
-setup = (app, options, cb) ->
-  redisClient = undefined
-  if process.env.REDIS_HOST
-    redisClient = redis.createClient(process.env.REDIS_PORT, process.env.REDIS_HOST)
-    redisClient.auth process.env.REDIS_PASSWORD
-  else if process.env.OPENREDIS_URL
-    redisUrl = parseUrl(process.env.OPENREDIS_URL)
-    redisClient = redis.createClient(redisUrl.port, redisUrl.hostname)
-    redisClient.auth redisUrl.auth.split(':')[1]
-  else
-    redisClient = redis.createClient()
-  mongoUrl = process.env.MONGO_URL or process.env.MONGOHQ_URL
-  if !mongoUrl
-    mongoUrl = 'mongodb://' + (process.env.MONGO_HOST or 'localhost') + ':' + (process.env.MONGO_PORT or 27017) + '/' + (process.env.MONGO_DB or 'derby-' + (app.name or 'app'))
+favicon = require "serve-favicon"
+compression = require "compression"
+cookieParser = require "cookie-parser"
+session = require "express-session"
+
+util = require "./util"
+
+
+# derby plugins
+derby.use bundle
+
+
+# error app
+errorApp = derby.createApp()
+errorApp.loadViews "#{__dirname}/../views/error"
+errorApp.loadStyles "#{__dirname}/../styles/reset"
+errorApp.loadStyles "#{__dirname}/../styles/error"
+
+
+exports.setup = setup = (app, options, cb) ->
+  publicDir = "#{__dirname}/../../public"
+
   # The store creates models and syncs data
-  store = derby.createStore(
-    db: liveDbMongo(mongoUrl + '?auto_reconnect', safe: true)
-    redis: redisClient)
-  store.on 'bundle', (browserify) ->
-    # Add support for directly requiring coffeescript in browserify bundles
+  store = util.derbyStore()
+
+  store.on "bundle", (browserify) ->
     browserify.transform { global: true }, coffeeify
-    # HACK: In order to use non-complied coffee node modules, we register it
-    # as a global transform. However, the coffeeify transform needs to happen
-    # before the include-globals transform that browserify hard adds as the
-    # first trasform. This moves the first transform to the end as a total
-    # hack to get around this
     pack = browserify.pack
 
     browserify.pack = (opts) ->
@@ -40,42 +38,45 @@ setup = (app, options, cb) ->
       opts.globalTransform.push detectTransform
       pack.apply this, arguments
 
-    return
-  publicDir = __dirname + '/../../public'
-  handlers = highway(store)
-  expressApp = express().use(express.favicon()).use(express.compress()).use(express.static(publicDir))
-  expressApp.use(store.modelMiddleware()).use(express.cookieParser()).use(express.session(
-    secret: process.env.SESSION_SECRET or 'YOUR SECRET HERE'
-    store: new RedisStore(
-      host: process.env.REDIS_HOST or 'localhost'
-      port: process.env.REDIS_PORT or 6379))).use(handlers.middleware).use createUserId
+  options.storeCallback store if options.storeCallback
+
+  handlers = highway store
+
+  expressApp = express()
+    #.use favicon "#{publicDir}/favicon.ico"
+    .use compression()
+    .use express.static publicDir
+    .use store.modelMiddleware()
+    .use cookieParser()
+    .use session
+      store: util.redisStore()
+      secret: process.env.SESSION_SECRET or "YOUR SECRET HERE"
+    .use handlers.middleware
+    .use createUserId
+
   if options and options.static
-    if Array.isArray(options.static)
-      i = 0
-      while i < options.static.length
-        o = options.static[i]
-        expressApp.use o.route, express.static(o.dir)
-        i++
+    if Array.isArray options.static
+      for handler in option.static
+        expressApp.use handler.route, express.static handler.dir
     else
-      expressApp.use express.static(options.static)
-  expressApp.use(app.router()).use(expressApp.router).use errorMiddleware
-  app.writeScripts store, publicDir, { extensions: [ '.coffee' ] }, (err) ->
+      expressApp.use express.static options.static
+
+  expressApp.use app.router()
+    .use errorMiddleware
+
+  app.writeScripts store, publicDir, { extensions: [ ".coffee" ] }, (err) ->
     cb err, expressApp, handlers.upgrade
-    return
-  return
+
 
 createUserId = (req, res, next) ->
   model = req.getModel()
-  userId = req.session.userId
-  if !userId
-    userId = req.session.userId = model.id()
-  model.set '_session.userId', userId
+  userId = req.session.userId or req.session.userId = model.id()
+  model.set "_session.userId", userId
   next()
-  return
+
 
 errorMiddleware = (err, req, res, next) ->
-  if !err
-    return next()
+  return next() unless err
   message = err.message or err.toString()
   status = parseInt(message)
   status = if status >= 400 and status < 600 then status else 500
@@ -83,16 +84,5 @@ errorMiddleware = (err, req, res, next) ->
     console.log err.message or err
   else
     console.log err.stack or err
-  page = errorApp.createPage(req, res, next)
+  page = errorApp.createPage req, res, next
   page.renderStatic status, status.toString()
-  return
-
-derby.use require('racer-bundle')
-exports.setup = setup
-errorApp = derby.createApp()
-errorApp.loadViews __dirname + '/../views/error'
-errorApp.loadStyles __dirname + '/../styles/reset'
-errorApp.loadStyles __dirname + '/../styles/error'
-
-# ---
-# generated by js2coffee 2.0.1

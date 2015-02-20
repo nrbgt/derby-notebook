@@ -11,27 +11,31 @@
     "start": "./node_modules/.bin/coffee ./src/server/index.coffee"
   },
   "dependencies": {
-    "coffee-script": "~1.7.1",
-    "coffeeify": "~0.6.0",
-    "connect-redis": "~1.4.7",
-    "derby": "0.6.0-alpha29",
+    "coffee-script": "^1.9.1",
+    "coffeeify": "^1.0.0",
+    "compression": "^1.4.1",
+    "connect-redis": "^2.2.0",
+    "codemirror": "^4.12.0",
+    "cookie-parser": "^1.3.4",
+    "derby": "0.6.0-alpha35",
     "derby-debug": "^0.1.0",
+    "derby-hook": "^0.0.6",
     "derby-jade": "^0.6.17",
-    "derby-stylus": "~0.1.0",
-    "express": "~3.18.0",
-    "express-http-proxy": "~0.3.1",
-    "livedb-mongo": "~0.3.0",
-    "racer-bundle": "~0.1.1",
-    "racer-highway": "^1.4.1",
-    "redis": "~0.10.1",
-    "request": "~2.53.0",
-    "xhr": "~2.0.0"
+    "derby-stylus": "^0.1.0",
+    "express": "^4.10.2",
+    "express-session": "^1.10.3",
+    "express-http-proxy": "^0.3.1",
+    "livedb-mongo": "^0.4.1",
+    "racer-bundle": "^0.1.1",
+    "racer-highway": "^2.0.1",
+    "racer": "^0.6.0-alpha27",
+    "redis": "^0.12.1",
+    "request": "^2.53.0",
+    "serve-favicon": "^2.2.0",
+    "tough-cookie": "^0.12.1"
   },
   "optionalDependencies": {
-    "hiredis": "~0.1.16"
-  },
-  "browser": {
-    "request": "xhr"
+    "hiredis": "^0.2.0"
   },
   "devDependencies": {},
   "engines": {

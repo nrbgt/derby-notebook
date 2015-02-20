@@ -15,4 +15,4 @@ VOLUME /srv/derby-notebook/public
 WORKDIR /srv/derby-notebook
 
 # the command that gets run inside the docker container
-CMD ["./node_modules/.bin/coffee", "./src/server/index.coffee"]
+CMD ["./node_modules/.bin/coffee"]

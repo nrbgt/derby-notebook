@@ -1,14 +1,18 @@
-derbynotebook:
+proxy:
+  command: ./node_modules/.bin/coffee ./src/server/index.coffee
   build: ./derby-notebook
   restart: always
   links:
     - redis
     - mongo
     - ipython
+  environment:
+    HTTP_PORT: "9999"
   ports:
     - "9999:9999"
   volumes:
     - ./derby-notebook/src:/srv/derby-notebook/src
+    - ./derby-notebook/public:/srv/derby-notebook/public
 
 redis:
   image: redis

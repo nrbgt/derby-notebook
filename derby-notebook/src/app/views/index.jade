@@ -1,5 +1,5 @@
 Title:
-  | {{_page.notebook}}
+  | {{_page.notebook.name}}
 
 Head:
   style.
@@ -9,11 +9,9 @@ Head:
   
 Body:
   .notebook_app
-    j-header(notebook='{{_page.notebook}}')
+    j-header(notebook='{{_page.notebook.name}}')
+    j-toolbar(notebook='{{_page.notebook}}')
 
     #site(style="display:block;")
       #ipython-main-app
-        j-notebook(
-          notebook='{{_page.notebook}}'
-          notebook_content='{{_page.notebook_content}}'
-        )
+        j-notebook(notebook='{{_page.notebook}}')

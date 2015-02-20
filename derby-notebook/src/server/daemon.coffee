@@ -1,30 +1,40 @@
-liveDbMongo = require 'livedb-mongo'
-Redis = require 'redis'
-racer = require 'racer'
+hook = require "derby-hook"
+tough = require "tough-cookie"
+request = require "request"
+  .defaults jar: true
 
-log = (args...) -> console.log "DAEMON", args...
+util = require "./util"
 
-module.exports = ->
-  log 'STARTING'
+env = process.env
+IPYTHON = "http://#{env.IPYTHON_HOST}:#{env.IPYTHON_PORT}"
 
-  {MONGO_PORT, MONGO_HOST, MONGO_DB, REDIS_HOST} = process.env
-  MONGO_HOST = MONGO_HOST or 'localhost'
-  MONGO_PORT = MONGO_PORT or 27017
-  MONGO_DB = MONGO_DB or 'derby-' + (app.name or 'app')
+module.exports = (store)->
+  daemon =
+    init: ->
+      hook store
 
-  redis = Redis.createClient()
-  redis.select REDIS_HOST
-  log 'redis', redis
+      request.post
+        url: "#{IPYTHON}/login"
+        form: password: "Dont make this your default"
+        (err, response, body) ->
+          return console.error "... connection error", err if err
+          console.info "... OT daemon connected to IPython"
+          daemon.listen()
 
-  mongoUrl = "mongodb://#{MONGO_HOST}:#{MONGO_PORT}/#{MONGO_DB}?auto_reconnect"
+    listen: ->
+      store.hook "create", "notebooks", daemon.notebookCreated
+      console.info "... OT daemon waiting ..."
 
-  store = racer.createStore
-    db: liveDbMongo mongoUrl, safe: true
-    redis: redis
-  log 'store', store
-
-  model = store.createModel()
-  log 'model', model
-
-  model.on 'change', (value) ->
-    log 'change: ' + value
+    notebookCreated: (id, notebook) ->
+      console.log "HOOK", id, notebook
+      model = store.createModel()
+      model.fetch "notebooks.#{id}", ->
+        console.log arguments
+        request
+          url: "#{IPYTHON}/api/contents/#{notebook.name}?type=notebook"
+          headers: "Content-Type": "application/json"
+          json: true
+          (err, response, body) ->
+            return console.error "... failed to fetch contents", err if err
+            console.log "... daemon contents fetched", body
+            model.set "notebooks.#{id}.content", body
