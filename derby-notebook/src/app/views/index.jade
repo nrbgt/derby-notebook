@@ -1,18 +1,43 @@
+Page:
+
+  doctype html
+  <html>
+  head
+    meta(charset="utf-8")
+    title
+      view(name="{{$render.prefix}}Title")
+    view(name="{{$render.prefix}}Styles")
+    view(name="{{$render.prefix}}Head")
+  <body class="notebook_app responsive {{$bodyClass($render.ns)}}">
+  view(name="{{$render.prefix}}Body")
+
+
 Title:
+
   | {{_page.notebook.name}}
 
+
 Head:
+
   style.
     @import url("/static/components/codemirror/lib/codemirror.css");
     @import url("/static/style/style.min.css");
     @import url("/static/notebook/css/override.css");
-  
-Body:
-  .notebook_app
-    j-header(notebook='{{_page.notebook.name}}')
-    j-toolbar(notebook='{{_page.notebook}}')
-    j-kernel(kernel='{{_page.notebook.session.kernel}}')
 
-    #site(style="display:block;")
-      #ipython-main-app
-        j-notebook(notebook='{{_page.notebook}}')
+
+Body:
+
+  j-header(
+    notebook='{{_page.notebook}}'
+    currentCell='{{_session.currentCell}}'
+    cells='{{_page.cells}}'
+  )
+
+  #site(style="display:block;")
+    #ipython-main-app
+      j-notebook(
+        notebook='{{_page.notebook}}'
+        currentCell='{{_session.currentCell}}'
+        userId='{{_session.userId}}'
+        cells='{{_page.cells}}'
+      )

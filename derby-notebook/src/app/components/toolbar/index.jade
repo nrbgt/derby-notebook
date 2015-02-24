@@ -1,7 +1,11 @@
-index:(element="j-toolbar", arrays="notebook/content/content/cells")
+index:(element="j-toolbar")
   #maintoolbar.navbar
     .toolbar-inner.navbar-inner.navbar-nobg
       #maintoolbar-container.container.toolbar
         #insert_above_below.btn-group
-          button.btn.btn-default(on-click="insertCell()")
+          button.btn.btn-default(on-click="insertCell currentCell")
             i.fa.fa-plus
+
+        #run_int.btn-group
+          button.btn.btn-default(on-click="run currentCell")
+            i.fa-play.fa

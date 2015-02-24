@@ -1,6 +1,15 @@
 index:(element="j-cell")
-  .cell
-    .prompt.input_prompt
-    .inner_cell
-      .input_area
-        textarea(as="textarea"): {{cell.source}}
+  .cell(
+    class="{{if currentCell == index}}selected{{/}}"
+    on-click="selectCell index"
+  )
+    .input
+      .prompt.input_prompt
+        label.label.label-default(style="background-color: #{{color cell.id}}")
+          | {{color cell.id}}
+      .inner_cell
+        .input_area
+          j-editor(value="{{cell.source}}")
+    .widget-area
+    .output
+    

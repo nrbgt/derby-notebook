@@ -6,13 +6,19 @@ index:(element="j-header")
           img(src='/static/base/images/logo.png'
             alt='Jupyter Notebook')
 
-      span#login_widget
-        button#logout.btn.btn-sm.navbar-btn Logout
-
       span#save_widget.pull-left.save_widget
-        span#notebook_name.filename {{notebook}}
-        span.checkpoint_status(title='{{checkpoint}}')
-        | Last Checkpoint: {{checkpoint}}
-        span.autosave_status (autosaved)
+        span#notebook_name.filename {{notebook.name}}
 
-      .header-bar
+    .header-bar
+        
+    #menubar-container.container
+      #menubar
+        #menus.navbar.navbar-default
+          .container-fluid
+            j-kernel(kernel='{{notebook.session.kernel}}')
+      j-toolbar(
+        currentCell='{{currentCell}}'
+        cells='{{cells}}'
+      )
+
+    .lower-header-bar

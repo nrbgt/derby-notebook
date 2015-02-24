@@ -2,10 +2,11 @@
   "name": "derby-notebook",
   "description": "Multiuser Jupyter Notebook",
   "version": "0.1.0",
-  "homepage": "http://bollwyvl.github.io/derby-notebook",
+  "license": "BSD",
+  "homepage": "http://github.com/nrbgt/derby-notebook",
   "repository": {
     "type": "git",
-    "url": "git://github.com/bollwyvl/derby-notebook.git"
+    "url": "git://github.com/nrbgt/derby-notebook.git"
   },
   "scripts": {
     "start": "./node_modules/.bin/coffee ./src/server/index.coffee"

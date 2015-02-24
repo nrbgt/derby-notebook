@@ -9,8 +9,10 @@ module.exports = class SessionSocket extends ApiCall
   VERSION: "5.0"
   MSG:
     KERNEL_INFO: "kernel_info_request"
+    EXECUTE_REQUEST: "execute_request"
   CHANNEL:
     SHELL: "shell"
+    IOPUB: "iopub"
   username: "OTD"
 
   root: -> "ws://#{@origin}/api/kernels"
@@ -40,7 +42,7 @@ module.exports = class SessionSocket extends ApiCall
   setModel: (path, value, op="set") ->
     model = @store.createModel()
     notebook = model.at @notebook
-    model.fetch notebook, ->
+    model.fetch notebook, =>
       console.log "Attempting to set #{@notebook}.#{path} =>", value
       notebook[op] path, value
 
@@ -51,11 +53,18 @@ module.exports = class SessionSocket extends ApiCall
   finishMessage: (msg) =>
     if msg.channel == @CHANNEL.SHELL
       @handleShellReply msg
+    if msg.channel == @CHANNEL.IOPUB
+      @handleIopubReply msg
 
   handleShellReply: (reply) ->
+    console.log "handling shell reply", reply
     {content, metadata} = reply
-    parent = reply.parent_header.msg_id
-    @callbacks[msg.header.msg_id]?.shell?.reply reply
+    @callbacks[reply.parent_header.msg_id]?.shell?.reply reply
+
+  handleIopubReply: (reply) ->
+    console.log "handling IOPUB reply", reply
+    {content, metadata} = reply
+    @callbacks[reply.parent_header.msg_id]?.iopub?.output reply
 
   send: (msg) ->
     @ws.send serialize.serialize msg
@@ -65,6 +74,17 @@ module.exports = class SessionSocket extends ApiCall
     msg.channel = @CHANNEL.SHELL
     @send msg
     @callbacks[msg.header.msg_id] callbacks
+
+  execute: (code, callbacks) ->
+    console.log "executing", code
+    content =
+      code: code
+      silent: true
+      store_history: false
+      user_expressions: {}
+      allow_stdin: false
+
+    @sendShell @MSG.EXECUTE_REQUEST, content, callbacks
 
   kernelInfo: (callback=->) ->
     @sendShell @MSG.KERNEL_INFO, {}, shell: reply: callback

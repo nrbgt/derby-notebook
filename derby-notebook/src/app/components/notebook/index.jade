@@ -1,7 +1,12 @@
-index:(element="j-notebook", arrays="notebook/content/content/cells")
+index:(element="j-notebook")
   #notebook_panel
     #notebook
       #notebook-container.container
-        each notebook.content.content.cells as #cell
-          j-cell(cell='{{#cell}}')
+        each cells as #cell, #index
+          j-cell(
+            cell='{{#cell}}'
+            index='{{#index}}'
+            currentCell='{{currentCell}}'
+            userId='{{userId}}'
+          )
       .end_space

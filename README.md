@@ -9,6 +9,18 @@ In the background, a listener waits for changes on the model, and transforms
 them into [messages][ipep-13], and similarly updates the model when it receives
 messages.
 
+## Roadmap
+- [X] proxy notebook
+- [X] Load content into multiuser view (after single-user bootstrap)
+- [X] open websocket connection to kernel
+- [X] multiuser codemirror in cells
+- [] multiuser presence, (chat, meh)
+- [] add cell at position
+- [] run cell
+- [] remove cell
+- [] Overload /notebooks (and all calls to start up kernel)
+
+
 ## Model
 A Derby model is a set of collections of JSON-compatible documents. The only
 collection thus far is `notebooks`, which includes, of course, the notebook
@@ -20,35 +32,20 @@ contents, but several other pieces to enable a multi-user experience:
   "name": "Untitled.ipynb",
   // the results of the contents manager, with some added information that must
   // be stripped before being posted
-  "contents": {
-    # a bunch of stuff
-    "contents": {
-      "cells": [
-        {
-          "source": ""
-          "_multiuser": {
-            "id": "generated-by-derby",
-            # gnarly state machine stuff: RUN_REQUESTED, RUNNING
-            "state": "NOT_RUNNING"
-          }
-        }
-      ]
-    }
-  },
-  // a hash of user-related stuff so that the UI can reflect multiple
-  // perspectives
-  "users": {
-    "user-id-generated-by-node": {
-      "currentCell": "generated-by-derby",
-      "cursor": [0, 1]
-    }
-  }
+  "contents": {}
 }
 ```
 
 
 ## Running
-This is all tied together with [docker-compose](http://github.com).
+This is all lashed together with [docker-compose](http://github.com), and
+presently also runs inside a vagrant box.
+
+```sh
+vagrant up
+```
+
+Then, log into that box.
 
 Build (this can take a while!) and run everything with:
 ```sh
