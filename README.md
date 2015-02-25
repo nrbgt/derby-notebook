@@ -14,25 +14,49 @@ messages.
 - [X] Load content into multiuser view (after single-user bootstrap)
 - [X] open websocket connection to kernel
 - [X] multiuser codemirror in cells
-- [] multiuser presence, (chat, meh)
-- [] add cell at position
-- [] run cell
-- [] remove cell
-- [] Overload /notebooks (and all calls to start up kernel)
+- [ ] multiuser presence, (chat, meh)
+- [ ] add cell at position
+- [ ] run cell, see output
+- [ ] remove cell
+- [ ] overload `/notebooks` (and all calls to start up kernel)
+- [ ] post contents back to content manager API
+- [ ] wrap widgets in derby model
 
 
 ## Model
-A Derby model is a set of collections of JSON-compatible documents. The only
-collection thus far is `notebooks`, which includes, of course, the notebook
+A Derby model is a set of collections of JSON-compatible documents. The main
+collection is `notebooks`, which includes, of course, the notebook
 contents, but several other pieces to enable a multi-user experience:
 
 ```js
 {
   // The filename, as would be used in /notebooks/Untitled.ipynb
   "name": "Untitled.ipynb",
-  // the results of the contents manager, with some added information that must
-  // be stripped before being posted
-  "contents": {}
+  // the results of the contents manager
+  "contents": {},
+  // stuff for connecting to kernel
+  "session": {},
+  // feeds the reflist
+  "cellIds": []
+}
+```
+
+When one of these documents are created, a `derby-hook` goes off an grabs the
+contents, and populates the `cells` collection. Each cell is its own standalone
+document to keep updates more atomic. `_` keys will be stripped out when being
+posted back to the
+```js
+{
+  "cell_type": "markdown" // or code
+  "source": "the code or text",
+  "outputs": [],
+  // ... more cell stuff
+  "id": "generated-by-derby"
+  "_state": "run" // probably a better way to do this
+  "_editors": {
+    "userid": 1
+  },
+  "_notebook": "the notebook id"
 }
 ```
 
