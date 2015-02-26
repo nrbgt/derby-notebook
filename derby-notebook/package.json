@@ -37,9 +37,6 @@
     "underscore": "^1.8.1",
     "ws": "^0.7.1"
   },
-  "optionalDependencies": {
-    "hiredis": "^0.2.0"
-  },
   "devDependencies": {},
   "engines": {
     "node": "0.10.x"
