@@ -5,6 +5,8 @@ module.exports = class CellEditor
     CodeMirror = require "codemirror"
     require "codemirror/mode/gfm/gfm.js"
 
+    console.log "CODEMIRROR", @model.get "value"
+
     @cm = CodeMirror @container,
       value: @model.get("value") or ""
       theme: "ipython"

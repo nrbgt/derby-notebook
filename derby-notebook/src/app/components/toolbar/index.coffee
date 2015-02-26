@@ -1,13 +1,13 @@
 module.exports = class Toolbar
   view: __dirname
 
-  insertCell: (current)->
-    @model.insert "cells", current, [
+  insertCell: (after) ->
+    @model.setEach "newCell",
+      id: @model.id()
       metadata: {}
       cell_type: "markdown"
       source: ""
-    ]
-    @model.set "currentCell", current
+      _prev: after
 
-  runCurrentCell: (current)->
+  runCell: (id) ->
     @model.set "cells.#{current}._state", "run"

@@ -1,7 +1,7 @@
 index:(element="j-cell")
   .cell(
-    class="{{if currentCell == index}}selected{{/}}"
-    on-click="selectCell index"
+    class="{{if currentCell == cell.id}}selected{{/}}"
+    on-click="selectCell cell.id"
   )
     .input
       .prompt.input_prompt
@@ -9,7 +9,7 @@ index:(element="j-cell")
           | {{color cell.id}}
       .inner_cell
         .input_area
-          j-editor(value="{{cell.source}}")
+          j-editor(value='{{cell.source}}')
     .widget-area
     .output
     

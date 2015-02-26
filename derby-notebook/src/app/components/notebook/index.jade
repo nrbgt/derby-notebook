@@ -2,10 +2,9 @@ index:(element="j-notebook")
   #notebook_panel
     #notebook
       #notebook-container.container
-        each cells as #cell, #index
+        each cells as #cell
           j-cell(
             cell='{{#cell}}'
-            index='{{#index}}'
             currentCell='{{currentCell}}'
             userId='{{userId}}'
           )

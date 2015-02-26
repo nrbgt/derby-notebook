@@ -1,4 +1,6 @@
-app = module.exports = require 'derby'
+_ = require "underscore"
+
+module.exports = app = require 'derby'
   .createApp 'derby-notebook', __filename
 
 # extra init so we can use app as @
@@ -21,38 +23,51 @@ init = ->
 
     notebookQuery.fetch (err) ->
       return next err if err
-      console.log "fetched query"
       notebooks = notebookQuery.get()
 
       # first we have to find the notebook..
-      id = if notebooks.length
+      notebookId = if notebooks.length
         notebooks[0].id
       else
-        console.log "adding notebook"
         # or we make a new one
         model.add "notebooks", name: name
 
-      # reference it to the page for easy naming
-      notebook = model.at "notebooks.#{id}"
+      notebook = model.at "notebooks.#{notebookId}"
+
+      # handler model changes
+      model.on "change", "_page.newCell.**", -> process.nextTick ->
+        cell = model.del "_page.newCell"
+        console.log "DELETED NEW CELL", cell
+
+        _.extend cell, _notebook: notebookId
+
+        model.add "cells", cell
+
+        oldPrev = model.query "cells",
+          _prev: cell._prev
+          _notebook: notebookId
+
+        oldPrev.fetch ->
+          prevs = oldPrev.get()
+          model.set "cells.#{prevs[0].id}._prev", cell.id if prevs.length
+
+      model.setNull "_session.currentCell",  null
+
+      #set up filters
+      model
+        .filter "cells", (cell) -> cell._notebook is notebookId
+        .sort (a, b) -> if b._prev is a.id then -1 else 1
+        .ref "_page.cells"
 
       # finally, subscribe to all changes beneath it... maybe other stuff
       # eventually
-      model.subscribe notebook, (err) ->
+      model.subscribe notebook, "cells", (err) ->
         return next err if err
-        console.log "notebook subscription"
+        # set up refs
         model.ref "_page.notebook", notebook
-        model.setNull "_session.currentCell", 0
 
-        cellIds = notebook.at "cellIds"
-
-        model.query "cells", cellIds
-          .subscribe (err) ->
-            return next err if err
-            model.ref '_page.notebook', notebook
-            model.refList '_page.cells', 'cells', cellIds
-
-            # ok, actually render!
-            page.render()
+        # ok, actually render!
+        page.render()
 
 
 # let's go!
