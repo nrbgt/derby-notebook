@@ -37,17 +37,18 @@ init = ->
       # get cells ready
       cells = model.query "cells",
         _notebook: notebookId
-        $orderby: _order: 1
 
-      # set up refs
 
       # finally, subscribe to all changes beneath it... maybe other stuff
       # eventually
       model.subscribe cells, notebook, (err) ->
         return next err if err
-
+        # set up refs
+        model
+          .filter "cells", ({_notebook}) -> _notebook is notebookId
+          .sort (a, b) -> if b._prev is a.id then -1 else 1
+          .ref "_page.cells", updateIndices: true
         model.ref "_page.notebook", notebook
-        model.ref "_page.cells", cells
 
         # ok, actually render!
         page.render()
