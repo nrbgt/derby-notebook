@@ -32,39 +32,38 @@ init = ->
         # or we make a new one
         model.add "notebooks", name: name
 
+      # scope a model
       notebook = model.at "notebooks.#{notebookId}"
+      # get cells ready
+      cells = model.query "cells", _notebook: notebookId
 
-      # handler model changes
-      model.on "change", "_page.newCell.**", -> process.nextTick ->
-        cell = model.del "_page.newCell"
-        console.log "DELETED NEW CELL", cell
-
-        _.extend cell, _notebook: notebookId
-
-        model.add "cells", cell
-
-        oldPrev = model.query "cells",
-          _prev: cell._prev
-          _notebook: notebookId
-
-        oldPrev.fetch ->
-          prevs = oldPrev.get()
-          model.set "cells.#{prevs[0].id}._prev", cell.id if prevs.length
-
-      model.setNull "_session.currentCell",  null
-
-      #set up filters
-      model
+      #set up filter/sort... should be populated by the query
+      orderedCells = model
         .filter "cells", (cell) -> cell._notebook is notebookId
         .sort (a, b) -> if b._prev is a.id then -1 else 1
-        .ref "_page.cells"
+
+      # set up refs
+      model.ref "_page.notebook", notebook
+      model.ref "_page.cells", cells, updateIndices: true
+
+      model.on "change", "_page.newCell", ->
+        console.log "New Cell", cell, arguments
+        return
+        return unless cell and cell.id
+
+        prevQuery = model.query "cells",
+          _prev: newCell._prev
+          _notebook: notebook
+
+        prevQuery.fetch ->
+          newId = model.add "cells", newCell
+          if (prev = prev.prevQuery()).length
+            model.set "cells.#{prev[0].id}._prev", cell.id
 
       # finally, subscribe to all changes beneath it... maybe other stuff
       # eventually
-      model.subscribe notebook, "cells", (err) ->
+      model.subscribe cells, notebook, (err) ->
         return next err if err
-        # set up refs
-        model.ref "_page.notebook", notebook
 
         # ok, actually render!
         page.render()

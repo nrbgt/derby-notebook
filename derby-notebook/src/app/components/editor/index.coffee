@@ -5,19 +5,25 @@ module.exports = class CellEditor
     CodeMirror = require "codemirror"
     require "codemirror/mode/gfm/gfm.js"
 
-    console.log "CODEMIRROR", @model.get "value"
-
     @cm = CodeMirror @container,
-      value: @model.get("value") or ""
       theme: "ipython"
       mode: "gfm"
       matchBrackets: true
       lineWrapping: true
 
-    @model.on "change", "value", (old, value, passed) => @modelChanged passed
+    value = @model.get "value"
+
+    if value is not null
+      @cm.setValue value
+    else
+      process.nextTick =>
+        @cm.setValue @model.get "value"
+
+    @model.on "change", "value", (old, value, passed) =>
+      @modelChanged value, passed
     @cm.on "change", (cm, change) => @editorChanged change
 
-  modelChanged: ({editing, $stringInsert, $stringRemove}) ->
+  modelChanged: (value, {editing, $stringInsert, $stringRemove}) ->
     #we don't want to change the CM instance if we did the change
     return if editing
 

@@ -1,8 +1,15 @@
 module.exports = class Toolbar
   view: __dirname
 
+  moveCellUp: (id) ->
+    console.log "UP", @model.get "cells"
+
+  moveCellDown: (id) ->
+    console.log "DOWN", @model.get "cells"
+
   insertCell: (after) ->
-    @model.setEach "newCell",
+    console.log "attempting to insert a cell"
+    @model.set "newCell",
       id: @model.id()
       metadata: {}
       cell_type: "markdown"
