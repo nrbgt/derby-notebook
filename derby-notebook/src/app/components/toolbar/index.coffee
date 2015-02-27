@@ -9,12 +9,20 @@ module.exports = class Toolbar
 
   insertCell: (after) ->
     console.log "attempting to insert a cell"
-    @model.set "newCell",
-      id: @model.id()
-      metadata: {}
-      cell_type: "markdown"
-      source: ""
-      _prev: after
+
+    cell = @model.root.at "cells.#{after}"
+
+    @model.fetch cell, =>
+      order = cell.get "_order"
+      newId = @model.root.add "cells",
+        metadata: {}
+        cell_type: "markdown"
+        source: ""
+        _notebook: cell.get "_notebook"
+        _order: "#{order}-00000"
+        _prev: cell.get "_prev"
+
+      cell.setEach _order: "#{order}-00001", _prev: newId
 
   runCell: (id) ->
-    @model.set "cells.#{current}._state", "run"
+    @model.root.set "cells.#{id}._state", "run"

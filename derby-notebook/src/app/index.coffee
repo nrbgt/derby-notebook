@@ -35,35 +35,19 @@ init = ->
       # scope a model
       notebook = model.at "notebooks.#{notebookId}"
       # get cells ready
-      cells = model.query "cells", _notebook: notebookId
-
-      #set up filter/sort... should be populated by the query
-      orderedCells = model
-        .filter "cells", (cell) -> cell._notebook is notebookId
-        .sort (a, b) -> if b._prev is a.id then -1 else 1
+      cells = model.query "cells",
+        _notebook: notebookId
+        $orderby: _order: 1
 
       # set up refs
-      model.ref "_page.notebook", notebook
-      model.ref "_page.cells", cells, updateIndices: true
-
-      model.on "change", "_page.newCell", ->
-        console.log "New Cell", cell, arguments
-        return
-        return unless cell and cell.id
-
-        prevQuery = model.query "cells",
-          _prev: newCell._prev
-          _notebook: notebook
-
-        prevQuery.fetch ->
-          newId = model.add "cells", newCell
-          if (prev = prev.prevQuery()).length
-            model.set "cells.#{prev[0].id}._prev", cell.id
 
       # finally, subscribe to all changes beneath it... maybe other stuff
       # eventually
       model.subscribe cells, notebook, (err) ->
         return next err if err
+
+        model.ref "_page.notebook", notebook
+        model.ref "_page.cells", cells
 
         # ok, actually render!
         page.render()
