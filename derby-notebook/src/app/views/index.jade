@@ -27,18 +27,8 @@ Head:
 
 Body:
 
-  j-header(
+  j-notebook(
     notebook='{{_page.notebook}}'
     currentCell='{{_session.currentCell}}'
-    cells='{{_page.cells}}'
-    newCell='{{_page.newCell}}'
+    userId='{{_session.userId}}'
   )
-
-  #site(style="display:block;")
-    #ipython-main-app
-      j-notebook(
-        notebook='{{_page.notebook}}'
-        currentCell='{{_session.currentCell}}'
-        userId='{{_session.userId}}'
-        cells='{{_page.cells}}'
-      )

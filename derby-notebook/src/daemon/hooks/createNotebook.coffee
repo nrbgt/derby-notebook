@@ -22,4 +22,8 @@ module.exports = ->
           model.setEach "notebooks.#{notebookId}",
             content: body
             session: false
-            (err)-> console.log "OTD set contents of #{notebookId}: #{err}"
+            (err)->
+              if err
+                console.error "OTD set contents #{notebookId} error: #{err}"
+              else
+                console.log "OTD set contents of #{notebookId}!"

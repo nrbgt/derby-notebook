@@ -1,11 +1,20 @@
 index:(element="j-notebook")
-  #notebook_panel
-    #notebook
-      #notebook-container.container
-        each cells as #cell
-          j-cell(
-            cell='{{#cell}}'
-            currentCell='{{currentCell}}'
-            userId='{{userId}}'
-          )
-      .end_space
+
+  j-header(
+    notebook='{{notebook}}'
+    currentCell='{{currentCell}}'
+    cells='{{cells}}'
+  )
+  
+  #site(style="display:block;")
+    #ipython-main-app
+      #notebook_panel
+        #notebook
+          #notebook-container.container
+            each cells as #cell
+              j-cell(
+                cell='{{#cell}}'
+                currentCell='{{currentCell}}'
+                userId='{{userId}}'
+              )
+          .end_space
