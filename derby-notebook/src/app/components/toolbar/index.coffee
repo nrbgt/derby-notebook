@@ -3,11 +3,30 @@ _ = require "underscore"
 module.exports = class Toolbar
   view: __dirname
 
-  moveCellUp: (id) ->
-    console.log "UP", @model.get "cells"
+  cellIndex: (cellId) ->
+    cells = @model.get "cells"
+    cells.indexOf _.findWhere cells, id: cellId
 
-  moveCellDown: (id) ->
-    console.log "DOWN", @model.get "cells"
+  moveCell: (down) ->
+    return unless cellId = @model.get "currentCell"
+
+    cells = @model.get "cells"
+
+    idx = @cellIndex cellId
+
+    # can't move first and last
+    return if (down and (idx == cells.length - 1)) or (not down and (idx == 0))
+
+    before = (if down then cells[idx + 1] else cells[idx - 1])._weight
+
+    after = if down
+      if cells[idx + 2] then cells[idx + 2]._weight else before + 1e3
+    else
+      if cells[idx - 2] then cells[idx - 2]._weight else 0
+
+    console.log "moving", cellId, "between", before, after
+    @model.scope "cells"
+      .set "#{cellId}._weight", (before + after) / 2
 
   insertCell: (after) ->
     ordered = @model.get "cells"
@@ -24,8 +43,7 @@ module.exports = class Toolbar
       _weight: 1e6
 
     if cellId
-      cell = _.findWhere ordered, id: cellId
-      cidx = ordered.indexOf cell
+      cidx = @cellIndex cellId
 
       prev = if !cidx then 0 else ordered[cidx - 1]._weight
       current = ordered[cidx]._weight

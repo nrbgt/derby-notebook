@@ -3,11 +3,11 @@ index:(element="j-toolbar")
     .toolbar-inner.navbar-inner.navbar-nobg
       #maintoolbar-container.container.toolbar
         #insert_above_below.btn-group
-          button.btn.btn-default(on-click="insertCell()")
+          button.btn.btn-default(on-click="insertCell false")
             i.fa-stack
               i.fa.fa-plus.fa-stack-1x
               i.fa.fa-long-arrow-up.fa-stack-2x
-          button.btn.btn-default(on-click="insertCell(true)")
+          button.btn.btn-default(on-click="insertCell true")
             i.fa-stack
               i.fa.fa-plus.fa-stack-1x
               i.fa.fa-long-arrow-down.fa-stack-2x
@@ -17,7 +17,7 @@ index:(element="j-toolbar")
             i.fa-play.fa
 
         #move_up_down.btn-group
-          button.btn.btn-default(on-click="moveCellUp()")
+          button.btn.btn-default(on-click="moveCell false")
             i.fa.fa-arrow-up
-          button.btn.btn-default(on-click="moveCellDown()")
+          button.btn.btn-default(on-click="moveCell true")
             i.fa.fa-arrow-down

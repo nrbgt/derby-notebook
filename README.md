@@ -15,7 +15,8 @@ messages.
 - [X] open websocket connection to kernel
 - [X] multiuser codemirror in cells
 - [ ] multiuser presence, (chat, meh)
-- [ ] add cell at position
+- [X] add cell above/below current
+- [X] move cell up/down
 - [ ] run cell, see output
 - [ ] remove cell
 - [ ] overload `/notebooks` (and all calls to start up kernel)
@@ -35,9 +36,7 @@ contents, but several other pieces to enable a multi-user experience:
   // the results of the contents manager
   "contents": {},
   // stuff for connecting to kernel
-  "session": {},
-  // feeds the reflist
-  "cellIds": []
+  "session": {}
 }
 ```
 
@@ -56,7 +55,8 @@ posted back to the
   "_editors": {
     "userid": 1
   },
-  "_notebook": "the notebook id"
+  "_notebook": "the notebook id",
+  "_weight": 1000 // heavier weights sink to the bottom of the page
 }
 ```
 
