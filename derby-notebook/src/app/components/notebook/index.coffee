@@ -7,10 +7,9 @@ module.exports = class Notebook
 
     filter = @model
       .filter cells, (cell) -> cell and cell._notebook is notebookId
-      .sort (a, b) ->
-        if b._prev is a.id then -1 else 1
+      .sort (a, b) -> a._weight - b._weight
 
-    @model.ref "cells", filter
+    @model.ref "cells", filter, updateIndices: true
 
   create: ->
     window.addEventListener "resize", @resize

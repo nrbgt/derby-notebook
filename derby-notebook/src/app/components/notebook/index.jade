@@ -11,10 +11,13 @@ index:(element="j-notebook")
       #notebook_panel
         #notebook
           #notebook-container.container
-            each cells as #cell
+            each cells as #cell, #idx
+              | OUTSIDE CELL: {{#idx}}: {{#cell.id}}
               j-cell(
-                cell='{{#cell}}'
-                currentCell='{{currentCell}}'
-                userId='{{userId}}'
+                idx="{{#idx}}"
+                cell="{{#cell}}"
+                cellId="{{#cell.id}}"
+                currentCell="{{currentCell}}"
+                userId="{{userId}}"
               )
           .end_space

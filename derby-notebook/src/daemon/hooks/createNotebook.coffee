@@ -11,13 +11,11 @@ module.exports = ->
         (err, response, body) ->
           return console.error "OTD failed FETCH #{notebookId}", err if err
 
-          prev = null
-
-          # load cells, copy them, and collect ids
-          for cell in body.content.cells
+          # load cells, copy and weight them
+          for cell, idx in body.content.cells
             prev = model.add "cells", _.extend cell,
               _notebook: notebookId
-              _prev: prev
+              _weight: 1e3 * (idx + 1)
 
           model.setEach "notebooks.#{notebookId}",
             content: body

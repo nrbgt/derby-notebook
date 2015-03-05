@@ -1,3 +1,5 @@
+_ = require "underscore"
+
 module.exports = class Toolbar
   view: __dirname
 
@@ -8,27 +10,33 @@ module.exports = class Toolbar
     console.log "DOWN", @model.get "cells"
 
   insertCell: (after) ->
-
+    ordered = @model.get "cells"
     cells = @model.scope "cells"
-    cell = cells.at after
-    session = @model.scope "_session"
+    cellId = @model.get "currentCell"
 
-    console.log "attempting to insert a cell after #{after}"
+    console.log "NOTEBOOK", @model.get "notebook"
 
     newCell =
-      id: newId = @model.id()
-      metadata: {}
       cell_type: "markdown"
       source: ""
-      _notebook: cell.get "_notebook"
-      _prev: cell.get "_prev"
+      metadata: {}
+      _notebook: @model.get "notebook.id"
+      _weight: 1e6
 
-    cell.set "_prev", newId
-    cells.add newCell
-    session.set "currentCell", newId
+    if cellId
+      cell = _.findWhere ordered, id: cellId
+      cidx = ordered.indexOf cell
 
+      prev = if !cidx then 0 else ordered[cidx - 1]._weight
+      current = ordered[cidx]._weight
+      next = if cidx is ordered.length - 1
+          ordered[cidx]._weight + 1e3
+        else
+          ordered[cidx + 1]._weight
 
-    console.log "created new cell #{newId}", newCell
+      newCell._weight = 0.5 * (current + (if after then next else prev))
+
+    @model.set "currentCell", cells.add newCell
 
   runCell: (id) ->
     @model.root.set "cells.#{id}._state", "run"

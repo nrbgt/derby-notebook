@@ -3,15 +3,21 @@ index:(element="j-toolbar")
     .toolbar-inner.navbar-inner.navbar-nobg
       #maintoolbar-container.container.toolbar
         #insert_above_below.btn-group
-          button.btn.btn-default(on-click="insertCell currentCell")
-            i.fa.fa-plus
+          button.btn.btn-default(on-click="insertCell()")
+            i.fa-stack
+              i.fa.fa-plus.fa-stack-1x
+              i.fa.fa-long-arrow-up.fa-stack-2x
+          button.btn.btn-default(on-click="insertCell(true)")
+            i.fa-stack
+              i.fa.fa-plus.fa-stack-1x
+              i.fa.fa-long-arrow-down.fa-stack-2x
 
         #run_int.btn-group
-          button.btn.btn-default(on-click="runCell currentCell")
+          button.btn.btn-default(on-click="runCell()")
             i.fa-play.fa
 
         #move_up_down.btn-group
-          button.btn.btn-default(on-click="moveCellUp currentCell")
+          button.btn.btn-default(on-click="moveCellUp()")
             i.fa.fa-arrow-up
-          button.btn.btn-default(on-click="moveCellDown currentCell")
+          button.btn.btn-default(on-click="moveCellDown()")
             i.fa.fa-arrow-down

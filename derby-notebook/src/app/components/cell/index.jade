@@ -3,6 +3,7 @@ index:(element="j-cell")
     class="{{if currentCell == cell.id}}selected{{/}}"
     on-click="selectCell cell.id"
   )
+    | INSIDE CELL: {{idx}}: {{cell.id}} ({{cellId}})
     .input
       .prompt.input_prompt
           label.label.label-default(
