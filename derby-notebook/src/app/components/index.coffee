@@ -3,6 +3,7 @@ init = (options)->
   @component require './header'
   @component require './kernel'
   @component require './editor'
+  @component require './button'
   @component require './toolbar'
   @component require './notebook'
 

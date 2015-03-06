@@ -2,22 +2,38 @@ index:(element="j-toolbar")
   #maintoolbar.navbar
     .toolbar-inner.navbar-inner.navbar-nobg
       #maintoolbar-container.container.toolbar
-        #insert_above_below.btn-group
-          button.btn.btn-default(on-click="insertCell false")
-            i.fa-stack
-              i.fa.fa-plus.fa-stack-1x
-              i.fa.fa-long-arrow-up.fa-stack-2x
-          button.btn.btn-default(on-click="insertCell true")
-            i.fa-stack
-              i.fa.fa-plus.fa-stack-1x
-              i.fa.fa-long-arrow-down.fa-stack-2x
+        .btn-group
+          j-button(
+            title="Insert Cell Above"
+            icon="caret-square-o-up"
+            on-clicked="insertCell false"
+          )
+          j-button(
+            title="Insert Cell Below"
+            icon="caret-square-o-down"
+            on-clicked="insertCell true"
+          )
+          j-button(
+            title="Remove Cell"
+            icon="remove"
+            on-clicked="removeCell()"
+          )
 
-        #run_int.btn-group
-          button.btn.btn-default(on-click="runCell()")
-            i.fa-play.fa
+        .btn-group
+          j-button(
+            title="Run Cell"
+            icon="play"
+            on-clicked="runCell()"
+          )
 
-        #move_up_down.btn-group
-          button.btn.btn-default(on-click="moveCell false")
-            i.fa.fa-arrow-up
-          button.btn.btn-default(on-click="moveCell true")
-            i.fa.fa-arrow-down
+        .btn-group
+          j-button(
+            title="Move Cell Up"
+            icon="arrow-up"
+            on-clicked="moveCell false"
+          )
+          j-button(
+            title="Move Cell Down"
+            icon="arrow-down"
+            on-clicked="moveCell true"
+          )

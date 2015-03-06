@@ -14,11 +14,11 @@ messages.
 - [X] Load content into multiuser view (after single-user bootstrap)
 - [X] open websocket connection to kernel
 - [X] multiuser codemirror in cells
-- [ ] multiuser presence, (chat, meh)
 - [X] add cell above/below current
 - [X] move cell up/down
+- [X] remove cell
 - [ ] run cell, see output
-- [ ] remove cell
+- [ ] multiuser presence, (chat, meh)
 - [ ] overload `/notebooks` (and all calls to start up kernel)
 - [ ] post contents back to content manager API
 - [ ] wrap widgets in derby model

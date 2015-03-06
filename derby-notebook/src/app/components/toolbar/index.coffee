@@ -3,11 +3,19 @@ _ = require "underscore"
 module.exports = class Toolbar
   view: __dirname
 
+  doAction: (action) ->
+    console.log action
+
   cellIndex: (cellId) ->
     cells = @model.get "cells"
     cells.indexOf _.findWhere cells, id: cellId
 
+  removeCell: ->
+    @model.scope "cells"
+      .del @model.get "currentCell"
+
   moveCell: (down) ->
+    console.log "move", down
     return unless cellId = @model.get "currentCell"
 
     cells = @model.get "cells"
