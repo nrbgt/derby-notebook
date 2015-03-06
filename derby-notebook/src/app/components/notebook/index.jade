@@ -1,9 +1,10 @@
 index:(element="j-notebook")
 
   j-header(
-    notebook='{{notebook}}'
-    currentCell='{{currentCell}}'
-    cells='{{cells}}'
+    notebook="{{notebook}}"
+    currentCell="{{currentCell}}"
+    cells="{{cells}}"
+    user="{{user}}"
   )
   
   #site(style="display:block;")
@@ -17,6 +18,6 @@ index:(element="j-notebook")
                   cell="{{#cell}}"
                   cellId="{{#cell.id}}"
                   currentCell="{{currentCell}}"
-                  userId="{{userId}}"
+                  user="{{user}}"
                 )
           .end_space

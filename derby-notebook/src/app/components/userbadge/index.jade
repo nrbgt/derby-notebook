@@ -1,0 +1,8 @@
+index:(element="j-user-badge")
+  label.label
+    | {{user.id}}
+  j-icon(
+    icon="{{user.icon}}"
+    size="{{size or 2}}"
+    color="{{user.color}}"
+  )

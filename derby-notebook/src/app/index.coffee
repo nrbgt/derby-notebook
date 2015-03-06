@@ -1,4 +1,7 @@
 _ = require "underscore"
+{icons} = require "./components/icon"
+
+randomColor = -> '#' + Math.floor(Math.random()*16777215).toString(16)
 
 module.exports = app = require 'derby'
   .createApp 'derby-notebook', __filename
@@ -20,6 +23,8 @@ init = ->
   # Routes render on CLIENT as well as SERVER
   @get '/multiuser/:name?', (page, model, {name}, next) ->
     notebookQuery = model.query "notebooks", name: name
+    userId = model.get "_session.userId"
+    user = model.at "users.#{userId}"
 
     notebookQuery.fetch (err) ->
       return next err if err
@@ -46,11 +51,14 @@ init = ->
 
       # finally, subscribe to all changes beneath it... maybe other stuff
       # eventually
-      model.subscribe cells, notebook, (err) ->
+      model.subscribe cells, notebook, user, (err) ->
         return next err if err
         # set up refs
+        user.setNull "icon", _.sample icons
+        user.setNull "color", randomColor()
 
         model.ref "_page.notebook", notebook
+        model.ref "_page.user", user
 
         # ok, actually render!
         page.render()
