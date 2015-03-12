@@ -1,0 +1,16 @@
+.mermaid *{font-family: sans-serif; }
+.mermaid {
+  width: 100%;
+  overflow: auto;
+}
+.mermaid .node, .mermaid .cluster{
+  fill: white !important;
+  stroke: black !important;
+  stroke-width: 1px !important;
+}
+.mermaid div{
+  text-align: center;
+}
+.mermaid .label{
+  color: black;
+}

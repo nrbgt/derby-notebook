@@ -1,2 +1,3 @@
 .vagrant
 derby-notebook/public/derby
+\.ipynb_checkpoints/
