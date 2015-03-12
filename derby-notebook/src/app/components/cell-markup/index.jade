@@ -1,0 +1,15 @@
+index:(element="j-cell-markup")
+  .cell(
+    class="text_cell {{classes cell, userCell, currentCell}}"
+    on-click="select()"
+    on-dblclick="unrender()"
+  )
+    .prompt.input_prompt
+    .inner_cell
+      .input_area
+        j-editor(value="{{cell.source}}", as="editor")
+      .text_cell_render.rendered_html
+        j-markdown(
+          value="{{cell.source}}"
+          disabled="{{not userCell.rendered}}"
+        )

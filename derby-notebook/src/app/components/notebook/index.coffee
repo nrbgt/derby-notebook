@@ -1,5 +1,6 @@
 module.exports = class Notebook
   view: __dirname
+  style: __dirname
 
   init: ->
     notebookId = @model.get "notebook.id"

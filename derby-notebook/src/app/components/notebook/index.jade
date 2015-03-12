@@ -13,11 +13,16 @@ index:(element="j-notebook")
         #notebook
           #notebook-container.container
               each cells as #cell, #idx
-                j-cell(
-                  idx="{{#idx}}"
-                  cell="{{#cell}}"
-                  cellId="{{#cell.id}}"
-                  currentCell="{{currentCell}}"
-                  user="{{user}}"
-                )
+                if #cell.cell_type is "markdown"
+                  j-cell-markup(
+                    cell="{{#cell}}"
+                    currentCell="{{currentCell}}"
+                    user="{{user}}"
+                  )
+                else
+                  j-cell(
+                    cell="{{#cell}}"
+                    currentCell="{{currentCell}}"
+                    user="{{user}}"
+                  )
           .end_space

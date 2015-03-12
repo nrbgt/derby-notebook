@@ -28,16 +28,11 @@ init = ->
 
     notebookQuery.fetch (err) ->
       return next err if err
-      notebooks = notebookQuery.get()
-
-      console.log "fetched #{notebooks.length} named #{name}"
 
       # first we have to find the notebook..
-      notebookId = if notebooks.length
-        console.log "found notebook named #{name} at #{notebooks[0].id}"
-        notebooks[0].id
-      else
-        console.log "creating notebook named #{name}",
+      notebookId = try
+        notebookQuery.get()[0].id
+      catch err
         # or we make a new one
         model.add "notebooks", name: name
       console.log "using notebook #{notebookId}"
@@ -49,19 +44,38 @@ init = ->
       cells = model.query "cells",
         _notebook: notebookId
 
-      # finally, subscribe to all changes beneath it... maybe other stuff
-      # eventually
-      model.subscribe cells, notebook, user, (err) ->
+      userNotebooks = model.query "userNotebooks",
+        _notebook: notebookId
+        _user: userId
+
+      userNotebooks.fetch (err) ->
         return next err if err
-        # set up refs
-        user.setNull "icon", _.sample icons
-        user.setNull "color", randomColor()
 
-        model.ref "_page.notebook", notebook
-        model.ref "_page.user", user
+        userNotebookId = try
+          userNotebooks.get()[0].id
+        catch err
+          model.add "userNotebooks",
+            _notebook: notebookId
+            _user: userId
+            cells: {}
 
-        # ok, actually render!
-        page.render()
+        userNotebook = model.at "userNotebooks.#{userNotebookId}"
+
+        # finally, subscribe to all changes beneath it... maybe other stuff
+        # eventually
+        model.subscribe cells, notebook, user, userNotebook, (err) ->
+          return next err if err
+          # set up refs
+          user.setNull "icon", _.sample icons
+          user.setNull "color", randomColor()
+
+
+          model.ref "_page.notebook", notebook
+          model.ref "_page.user", user
+          model.ref "_page.userNotebook", userNotebook
+
+          # ok, actually render!
+          page.render()
 
 
 # let's go!

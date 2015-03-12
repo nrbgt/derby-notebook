@@ -1,0 +1,9 @@
+index:(element="j-chat")
+  .j-chat
+    .j-chat-messages
+      each cells as #messages
+        .j-chat-message
+          j-markdown(value="#message.source")
+    .j-chat-new
+      j-editor(value="{{newMessage}}")
+      button(on-click="{{submit newMessage}}")

@@ -22,6 +22,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     inline: <<-eos
       add-apt-repository ppa:docker-maint/testing
       apt-get update
+      apt-get upgrade -y
+      apt-get dist-upgrade -y
+      apt-get autoremove -y
       apt-get install -y docker.io
 
       usermod -a -G docker vagrant
@@ -32,5 +35,15 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       /usr/local/bin/pip install -U --pre docker-compose
       yes | /usr/local/bin/pip uninstall requests
       /usr/local/bin/pip install requests==2.4.3
+
+      for IMG in dockerfile/nodejs dockerfile/mongodb ipython/notebook redis;
+      do
+        docker pull $IMG
+      done
+
+      docker rm $(docker ps -aq)
+      docker rmi $(docker images -qf "dangling=true")
+
+      cd /vagrant && docker-compose build
     eos
 end

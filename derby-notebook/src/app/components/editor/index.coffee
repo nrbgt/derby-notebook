@@ -1,11 +1,11 @@
 module.exports = class CellEditor
   view: __dirname
 
-  create: (model)->
+  create: ->
     CodeMirror = require "codemirror"
     require "codemirror/mode/gfm/gfm.js"
 
-    @cm = CodeMirror @container,
+    @cm = CodeMirror @container.parentNode,
       theme: "ipython"
       mode: "gfm"
       matchBrackets: true
@@ -65,3 +65,6 @@ module.exports = class CellEditor
         @supress = true
         @cm.setValue mv
         @supress = false
+
+  refresh: ->
+    @cm.refresh()

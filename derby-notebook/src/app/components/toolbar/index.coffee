@@ -64,5 +64,14 @@ module.exports = class Toolbar
 
     @model.set "currentCell", cells.add newCell
 
-  runCell: (id) ->
-    @model.root.set "cells.#{id}._state", "run"
+  runCell: ->
+    cellId = @model.get "currentCell"
+    cell = @model.scope "cells.#{cellId}"
+    userCell = @model.scope "_page.userNotebook.cells.#{cellId}"
+
+    cellType = cell.get "cell_type"
+
+    if cellType == "markdown"
+      userCell.set "rendered", true
+    else
+      cell.set "_state", "run"
